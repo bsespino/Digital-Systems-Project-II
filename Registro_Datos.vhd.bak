@@ -1,0 +1,35 @@
+--Registro de Datos
+
+--Library
+library ieee;
+use ieee.std_logic_1164.all;
+
+--Entity
+entity Reg_4bits is
+	port(
+		Clk,resetn,en: in std_logic;
+		i: in bit_vector(67 downto 0);
+		o: out bit_vector(67 downto 0));
+end Reg_4bits;
+
+--Architecture
+architecture solve of Reg_4bits is
+	-- Signals,Constants,Variables,Components
+	signal d,q: std_logic_vector(67 downto 0);
+	begin
+	--Process #1
+	d<=i;
+	process(resetn,clk)
+	--Sequential programming
+		begin
+			if resetn='0' then
+				q<=(others=>'0');
+			elsif clk'event and clk='1' then
+				if en='1' then
+					q<=d;
+				end if;
+			end if;
+	end process;
+	--Process #n...
+	o<=q;
+end solve;

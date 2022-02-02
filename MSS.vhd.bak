@@ -1,0 +1,94 @@
+--Synchronous Sequential Machine
+--https://vasanza.blogspot.com
+--https://github.com/vasanza/MSI-VHDL
+
+--Library
+library ieee;
+use ieee.std_logic_1164.all;
+
+--Entity
+entity MSS is
+	port(
+		resetn,clk,start,a_mayor_100,a_mayor_256,cambiar,a_igual_256: in std_logic;
+		--est: out std_logic_vector(2 downto 0);
+		load_rdm,rst_rdm,en_0,load_rdm_1,rst_rdm_1,en_1,rst_count_0: out std_logic;
+		en_cnt,sel_0,en_2,en_cnt_1,ld_cnt_1,rst_cnt_1,en_3,en_4,en_5,sel0:out std_logic;
+		en_6,en_7,sel1_0,sel1_1,sel2_0,sel2_1,modo_ram_0,modo_ram_1:out std_logic);
+end MSS;
+
+--Architecture
+architecture solve of MSS is
+	-- Signals,Constants,Variables,Components
+	type estado is (ta,tb,tc,td,te,tf,tg,th,ti,tj,tk,tl,tm,tn,t_o,tp,tq);
+	signal y: estado;
+	begin
+	--Process #1: Next state decoder and state memory
+	process(resetn,clk)
+	--Sequential programming
+		begin
+			if resetn = '0' then y<= ta;
+			elsif (clk'event and clk = '1') then
+				case y is
+					when ta => y<=tb;
+					when tb => if start='0' then y<=tb;
+								else y<=tc;
+								end if;
+					when tc => if start='1' then y<=tc;
+								else y<=td;
+								end if;
+					when td => y<=te;
+					when te => y<=tf;
+					when tf => if a_mayor_100='1' then y<=te;
+								else y<=tg;
+								end if;
+					when tg => y<=th;
+					when th => if a_mayor_256='0' then y<=td;
+								else y<= ti;
+								end if;
+					when ti => y<=tj;
+					when tj => y<=tk;
+					when tk => y<=tl;
+					when tl => y<=tm;
+					when tm => if cambiar='1' then y<= tn;
+								elsif cambiar='0' and a_igual_256='0' then y<= tj;
+								elsif cambiar='0' and a_igual_256='1' then y<= ta;
+								end if;
+					when tn => y<=t_o;
+					when t_o => y<=tp;
+					when tp => y<=tq;
+					when tq => if a_igual_256='0' then y<= tj;
+								else y<=ta;
+								end if;
+				end case;
+			end if;
+	end process;
+	--Process #2: Output decoder
+	process(y)-- mealy ->(y,d,n)
+	--Sequential programming
+		begin
+			load_rdm<='0';rst_rdm<='0';en_0<='0';load_rdm_1<='0';rst_rdm_1<='0';en_1<='0';rst_count_0<='0';modo_ram_0<='0'; modo_ram_1<='0';
+			en_cnt<='0';sel_0<='0';en_2<='0';en_cnt_1<='0';ld_cnt_1<='0';rst_cnt_1<='0';en_3<='0';en_4<='0';en_5<='0';
+			en_6<='0';en_7<='0';sel1_0<='0';sel1_1<='0';sel2_0<='0';sel2_1<='0';sel0<='0';
+			
+			case y is
+				when ta=> rst_rdm<='1'; rst_rdm_1<='1';en_0<='1';en_1<='1';rst_count_0<='1';
+				when tb=> 
+				when tc=>
+				when td=>load_rdm<='1';
+				when te=>load_rdm_1<='1';
+				when tf=>en_1<='1';
+				when tg=>en_0<='1';en_2<='1';
+				when th=>modo_ram_0<='1'; modo_ram_1<='1'; sel1_0<='1';sel2_0<='1';
+				when ti=>rst_count_0<='1';rst_cnt_1<='1';
+				when tj=>en_2<='1';
+				when tk=>ld_cnt_1<='1';
+				when tl=>en_cnt_1<='1';
+				when tm=>en_3<='1';
+				when tn=>en_4<='1';en_6<='1';
+				when t_o=>sel0<='1';en_5<='1';en_7<='1';
+				when tp=>sel1_0<='1';sel1_1<='1';sel2_0<='1';sel2_1<='1';modo_ram_0<='1';modo_ram_1<='1';
+				when tq=>sel1_1<='1';sel2_1<='1';modo_ram_0<='1';modo_ram_1<='1';
+			end case;
+	end process;
+	--Process #n... 
+end solve;

@@ -1,0 +1,29 @@
+--Library
+library ieee;
+use ieee.std_logic_1164.all;
+
+--Entity
+entity Deco1a4 is
+	generic ( n: integer:=68);--<-- nbits
+	generic ( m: integer:=36);--<-- mbits
+	generic ( l: integer:=12);--<-- lbits
+	generic ( k: integer:=12);--<-- kbits
+	generic ( j: integer:=8); --<-- jbits
+	
+	port(	A: in std_logic_vector(n-1 downto 0);
+			en: in std_logic;
+			CE: out std_logic_vector(m-1 downto 0));
+			ED: out std_logic_vector(j-1 downto 0));
+			PE: out std_logic_vector(l-1 downto 0));
+			AL: out std_logic_vector(k-1 downto 0));
+end Deco1a4;
+
+--Architecture
+architecture solve of Deco1a4 is
+	-- Signals,Constants,Variables,Components
+	begin
+		 when if en='1' then CE<= A(n-1 downto l+k+j); ED<= A(j-1 downto 0);  PE<= A(l+k+j-1 downto k+j);  AL<= A(k+j-1 downto j); 
+		      else (others=>'0');
+				end if;
+end solve;
+
